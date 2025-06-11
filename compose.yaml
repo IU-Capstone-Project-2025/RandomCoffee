@@ -1,0 +1,17 @@
+name: random-coffee-app
+
+services:
+  bot-service:
+    container_name: bot-service
+    tty: true
+    image: mituta/bot-service:latest
+  mini-app:
+    container_name: mini-app
+    tty: true
+    image: mituta/mini-app:latest
+    ports:
+      - "3000:3000"
+  ml:
+    container_name: ml
+    tty: true
+    image: mituta/ml:latest
