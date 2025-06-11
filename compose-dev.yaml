@@ -1,0 +1,26 @@
+name: random-coffee-app
+
+services:
+  bot-service:
+    container_name: bot-service
+    tty: true
+    build:
+      context: ./backend/bot-service
+      dockerfile: Dockerfile
+    image: bot-service:latest
+  mini-app:
+    container_name: mini-app
+    tty: true
+    build:
+      context: ./mini-app
+      dockerfile: Dockerfile
+    image: mini-app:latest
+    ports:
+      - "3000:3000"
+  ml:
+    container_name: ml
+    tty: true
+    build:
+      context: ./ml
+      dockerfile: Dockerfile
+    image: ml:latest
