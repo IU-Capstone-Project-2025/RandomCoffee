@@ -8,7 +8,8 @@ To deploy from local repository, do the following:
 
 - Clone the repository
 - Enter project root folder
-- Execute ```docker compose -f compose-dev.yaml up -d```
+- Rename ```backend/bot-service/src/main/resources/ex-application-secrets.yaml``` to ```application-secrets.yaml``` and change all variables to real ones
+- Execute ```docker compose -f compose-dev.yaml up -d --build```
 
 ## Remote deploy
 
