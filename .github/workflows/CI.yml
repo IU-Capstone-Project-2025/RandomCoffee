@@ -48,6 +48,9 @@ jobs:
           echo "=== Bot Service Logs ==="
           docker logs bot-service
 
+          echo "=== API Gateway Logs ==="
+          docker logs api-gateway
+
           echo "=== Mini App Logs ==="
           docker logs mini-app
 

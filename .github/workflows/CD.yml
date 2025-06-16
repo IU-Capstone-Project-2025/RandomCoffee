@@ -27,6 +27,13 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bot-service:latest
 
+      - name: Build and push api-gateway
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend/API-gateway
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
+
       - name: Build and push mini-app
         uses: docker/build-push-action@v6
         with:
