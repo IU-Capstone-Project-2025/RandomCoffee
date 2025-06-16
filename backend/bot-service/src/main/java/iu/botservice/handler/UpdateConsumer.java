@@ -1,5 +1,6 @@
 package iu.botservice.handler;
 
+import iu.botservice.command.Commands;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,13 @@ import java.util.concurrent.Executors;
 public class UpdateConsumer implements LongPollingUpdateConsumer {
 
     private final ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
-    private final UpdateRunnable updateRunnable;
+    private final Commands commands;
 
-    // TODO monitor thread-safe implementation (like singleton)
-    // TODO threads aren't auto deleted
     @Override
     public void consume(List<Update> updates) {
         updates.forEach(update ->
                 CompletableFuture
-                        .runAsync(updateRunnable.setUpdateAndGet(update), executorService)
+                        .runAsync(new UpdateRunnable(update, commands), executorService)
                         .handleAsync((result, exception) -> {
                             log.error(exception.getMessage(), exception);
                             return result;

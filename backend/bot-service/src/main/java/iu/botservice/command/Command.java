@@ -6,10 +6,11 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-public sealed abstract class Command permits NoCommand, StartCommand {
+public abstract class Command {
 
     @Value("${bot.token}")
     private String botToken;
+
     protected TelegramClient telegramClient;
 
     @PostConstruct
@@ -19,5 +20,5 @@ public sealed abstract class Command permits NoCommand, StartCommand {
 
     public abstract void handle(Update update);
 
-    public abstract String getCommandName();
+    protected abstract String getCommandName();
 }

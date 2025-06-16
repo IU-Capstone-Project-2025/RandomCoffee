@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Component
-public non-sealed class StartCommand extends Command {
+public class StartCommand extends Command {
 
     @Override
     public void handle(Update update) {
@@ -16,13 +16,13 @@ public non-sealed class StartCommand extends Command {
                 .getMessage()
                 .getChatId();
 
-        log.info("User {} sent command {}", chatId,
+        log.info("User '{}' sent command '{}'", chatId,
                 getCommandName()
         );
         try {
             telegramClient.execute(SendMessage.builder()
                     .chatId(chatId)
-                    .text("Привет")
+                    .text("Hi, lad! All bot functionality is in the Telegram mini app. Please, press the button 'Open' to enjoy it!")
                     .build());
         } catch (TelegramApiException exception) {
             throw new RuntimeException(exception);
@@ -30,7 +30,7 @@ public non-sealed class StartCommand extends Command {
     }
 
     @Override
-    public final String getCommandName() {
+    protected final String getCommandName() {
         return "/start";
     }
 }
