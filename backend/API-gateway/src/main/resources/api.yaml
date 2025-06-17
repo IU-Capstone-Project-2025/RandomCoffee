@@ -1,0 +1,32 @@
+openapi: "3.0.0"
+info:
+  title: OpenAPI
+  description: OpenAPI
+  version: 1.0.0
+tags:
+  - name: default
+    description: Default controller
+paths:
+  /:
+    get:
+      summary: Main page
+      operationId: index
+      tags:
+        - default
+      responses:
+        '200':
+          description: IndexResponse
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexResponse'
+
+components:
+  schemas:
+    IndexResponse:
+      description: IndexResponse
+      required:
+        - response
+      properties:
+        response:
+          type: string
