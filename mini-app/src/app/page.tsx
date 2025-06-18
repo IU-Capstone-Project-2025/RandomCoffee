@@ -1,11 +1,9 @@
 'use client';
 
-import { Page } from '@/components/Page';
+import HelloScreen from './helloscreen/page';
 
 export default function Home() {
   return (
-    <Page back={false}>
-      Hello world
-    </Page>
+    <HelloScreen />
   );
 }

@@ -1,8 +1,10 @@
 'use client';
 
-import { type PropsWithChildren } from 'react';
+import { useEffect, type PropsWithChildren } from 'react';
 import {
   miniApp,
+  on,
+  postEvent,
   useLaunchParams,
   useSignal,
 } from '@telegram-apps/sdk-react';
@@ -18,6 +20,21 @@ import './styles.css';
 function RootInner({ children }: PropsWithChildren) {
   const lp = useLaunchParams();
 
+  useEffect(() => {
+    const removeListener = on('theme_changed', (payload) => {
+      postEvent('web_app_set_header_color', { color: payload.theme_params.bg_color! })
+    })
+    return () => removeListener();
+  }, [])
+
+  useEffect(() => {
+    if (lp.tgWebAppPlatform === 'ios' || lp.tgWebAppPlatform === 'android') {
+      postEvent('web_app_request_fullscreen')
+      postEvent('web_app_setup_swipe_behavior', {allow_vertical_swipe: false})
+      postEvent('web_app_request_theme')
+    }
+  }, [lp.tgWebAppPlatform])
+
   const isDark = useSignal(miniApp.isDark);
 
   return (
@@ -25,7 +42,7 @@ function RootInner({ children }: PropsWithChildren) {
       <AppRoot
         appearance={isDark ? 'dark' : 'light'}
         platform={
-          ['macos', 'ios'].includes(lp.tgWebAppPlatform) ? 'ios' : 'base'
+          'ios'
         }
       >
         {children}
@@ -45,6 +62,6 @@ export function Root(props: PropsWithChildren) {
       <RootInner {...props} />
     </ErrorBoundary>
   ) : (
-    <div className="root__loading">Loading</div>
+    <div className="root__loading dark:bg-black dark:text-white">Loading...</div>
   );
 }
