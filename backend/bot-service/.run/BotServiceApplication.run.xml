@@ -4,7 +4,6 @@
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.botservice.BotServiceApplication" />
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="clean install" run_configuration_type="MavenRunConfiguration" />
-      <option name="Make" enabled="true" />
     </method>
   </configuration>
 </component>

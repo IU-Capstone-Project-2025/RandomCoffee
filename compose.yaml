@@ -5,6 +5,10 @@ services:
     container_name: bot-service
     tty: true
     image: mituta/bot-service:latest
+  api-gateway:
+    container_name: api-gateway
+    tty: true
+    image: mituta/api-gateway:latest
   mini-app:
     container_name: mini-app
     tty: true

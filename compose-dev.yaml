@@ -8,6 +8,13 @@ services:
       context: ./backend/bot-service
       dockerfile: Dockerfile
     image: bot-service:latest
+  api-gateway:
+    container_name: api-gateway
+    tty: true
+    build:
+      context: ./backend/API-gateway
+      dockerfile: Dockerfile
+    image: api-gateway:latest
   mini-app:
     container_name: mini-app
     tty: true

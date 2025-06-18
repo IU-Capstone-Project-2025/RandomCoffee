@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+    <module name="API-gateway" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="iu.apigateway.ApiGatewayApplication" />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="clean install" run_configuration_type="MavenRunConfiguration" />
+    </method>
+  </configuration>
+</component>
