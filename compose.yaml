@@ -5,21 +5,26 @@ services:
     container_name: bot-service
     tty: true
     image: mituta/bot-service:latest
+    platform: linux/x86_64
   api-gateway:
     container_name: api-gateway
     tty: true
     image: mituta/api-gateway:latest
+    platform: linux/x86_64
   profile-service:
     container_name: profile-service
     tty: true
     image: mituta/profile-service:latest
+    platform: linux/x86_64
   mini-app:
     container_name: mini-app
     tty: true
     image: mituta/mini-app:latest
     ports:
       - "3000:3000"
+    platform: linux/x86_64
   ml:
     container_name: ml
     tty: true
     image: mituta/ml:latest
+    platform: linux/x86_64
