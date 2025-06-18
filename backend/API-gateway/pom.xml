@@ -72,6 +72,7 @@
                                 <sourceFolder>src/gen/java/main</sourceFolder>
                                 <useSpringBoot3>true</useSpringBoot3>
                                 <interfaceOnly>true</interfaceOnly>
+                                <useTags>true</useTags>
                             </configOptions>
                         </configuration>
                     </execution>
