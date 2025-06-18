@@ -1,3 +1,5 @@
+"use client"
+
 import { Page } from "@/components/Page";
 import { Button, LargeTitle, Placeholder, Text, Title } from "@telegram-apps/telegram-ui";
 import Image from "next/image";
