@@ -4,29 +4,138 @@ info:
   description: OpenAPI
   version: 1.0.0
 tags:
-  - name: default
-    description: Default controller
+  - name: profile
+    description: Profile controller
 paths:
-  /:
-    get:
-      summary: Main page
-      operationId: index
+  /profile:
+    post:
+      summary: Create profile
+      operationId: createProfile
       tags:
-        - default
+        - profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
       responses:
-        '200':
-          description: IndexResponse
+        '201':
+          description: Profile created
+        '400':
+          description: Invalid tags
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IndexResponse'
+                $ref: '#/components/schemas/InvalidTagsError'
+    patch:
+      summary: Update profile
+      operationId: updateProfile
+      tags:
+        - profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileRequest'
+      responses:
+        '200':
+          description: Profile updated
+        '400':
+          description: Invalid tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvalidTagsError'
+    get:
+      summary: Get profile
+      operationId: getProfile
+      tags:
+        - profile
+      responses:
+        '200':
+          description: Profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
 
 components:
   schemas:
-    IndexResponse:
-      description: IndexResponse
+    ProfileRequest:
+      type: object
       required:
-        - response
+        - first_name
+        - last_name
+        - bio
+        - tags
       properties:
-        response:
+        first_name:
           type: string
+        last_name:
+          type: string
+        bio:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+    InvalidTagsError:
+      type: object
+      properties:
+        message:
+          type: string
+        details:
+          type: object
+          properties:
+            error_code:
+              type: string
+            invalid_tags:
+              type: array
+              items:
+                type: string
+    ProfileResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        telegram_username:
+          type: string
+        bio:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        last_match:
+          $ref: '#/components/schemas/MatchHistoryItem'
+        next_matchmaking:
+          type: object
+          properties:
+            entered:
+              type: boolean
+            selection_type:
+              type: string
+              enum: [ TECH, NON_TECH, RANDOM ]
+            date:
+              type: string
+              format: date-time
+    MatchHistoryItem:
+      type: object
+      properties:
+        participated:
+          type: boolean
+        found:
+          type: boolean
+        communicated:
+          type: boolean
+        date:
+          type: string
+          format: date-time
+        profile:
+          $ref: '#/components/schemas/ProfileResponse'
