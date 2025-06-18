@@ -15,6 +15,13 @@ services:
       context: ./backend/API-gateway
       dockerfile: Dockerfile
     image: api-gateway:latest
+  profile-service:
+    container_name: profile-service
+    tty: true
+    build:
+      context: ./backend/profile-service
+      dockerfile: Dockerfile
+    image: profile-service:latest
   mini-app:
     container_name: mini-app
     tty: true

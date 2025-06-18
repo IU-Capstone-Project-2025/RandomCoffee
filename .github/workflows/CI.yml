@@ -40,6 +40,9 @@ jobs:
           echo "=== API Gateway Logs ==="
           docker logs api-gateway
 
+          echo "=== Profile Service Logs ==="
+          docker logs profile-service
+
           echo "=== Mini App Logs ==="
           docker logs mini-app
 

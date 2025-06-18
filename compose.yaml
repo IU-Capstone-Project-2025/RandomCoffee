@@ -9,6 +9,10 @@ services:
     container_name: api-gateway
     tty: true
     image: mituta/api-gateway:latest
+  profile-service:
+    container_name: profile-service
+    tty: true
+    image: mituta/profile-service:latest
   mini-app:
     container_name: mini-app
     tty: true
