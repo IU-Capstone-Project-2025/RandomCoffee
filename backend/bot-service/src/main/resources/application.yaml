@@ -1,5 +1,5 @@
 spring:
   application:
     name: "bot-service"
-  profiles:
-    active: secrets
+bot:
+  token: "${BOT_TOKEN}"

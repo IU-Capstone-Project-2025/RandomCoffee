@@ -1,6 +1,12 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="BotServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/../../.env" />
+    </option>
     <module name="bot-service" />
+    <selectedOptions>
+      <option name="environmentVariables" />
+    </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.botservice.BotServiceApplication" />
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="clean install" run_configuration_type="MavenRunConfiguration" />

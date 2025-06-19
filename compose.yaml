@@ -4,6 +4,9 @@ services:
   bot-service:
     container_name: bot-service
     tty: true
+    env_file: ./.env
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
     image: mituta/bot-service:latest
     platform: linux/x86_64
   api-gateway:
@@ -11,11 +14,31 @@ services:
     tty: true
     image: mituta/api-gateway:latest
     platform: linux/x86_64
+    ports:
+      - "8080:8080"
   profile-service:
     container_name: profile-service
     tty: true
     image: mituta/profile-service:latest
     platform: linux/x86_64
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  profile-db:
+    container_name: profile-db
+    tty: true
+    image: postgres:latest
+    platform: linux/x86_64
+    env_file: ./.env
+    environment:
+      - POSTGRES_DB=profile-db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - profile-db-volume:/var/lib/postgresql/data
   mini-app:
     container_name: mini-app
     tty: true

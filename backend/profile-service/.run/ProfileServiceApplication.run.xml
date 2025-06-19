@@ -1,5 +1,11 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProfileServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+    <envs>
+      <env name="POSTGRES_HOST" value="localhost" />
+    </envs>
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/../../.env" />
+    </option>
     <module name="profile-service" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.profileservice.ProfileServiceApplication" />
     <method v="2">

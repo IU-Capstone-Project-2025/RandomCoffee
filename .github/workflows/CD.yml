@@ -20,13 +20,6 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Create application-secrets.yaml
-        run: |
-          cat > backend/bot-service/src/main/resources/application-secrets.yaml << EOF
-          bot:
-            token: "${{ secrets.BOT_TOKEN }}"
-          EOF
-
       - name: Build and push bot-service
         uses: docker/build-push-action@v6
         with:
