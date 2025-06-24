@@ -14,11 +14,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Create application-secrets.yaml
+      - name: Create .env file
         run: |
-          cat > backend/bot-service/src/main/resources/application-secrets.yaml << EOF
-          bot:
-            token: "${{ secrets.BOT_TOKEN }}"
+          cat > .env << EOF
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           EOF
 
       - name: Build and start containers
@@ -43,6 +44,9 @@ jobs:
           echo "=== Profile Service Logs ==="
           docker logs profile-service
 
+          echo "=== Profile DB Logs ==="
+          docker logs profile-db
+
           echo "=== Mini App Logs ==="
           docker logs mini-app
 
@@ -58,6 +62,11 @@ jobs:
 
           if ! docker port mini-app | grep -q ":"; then
             echo "Error: No ports are exposed on mini-app container"
+            exit 1
+          fi
+
+          if ! docker port api-gateway | grep -q ":"; then
+            echo "Error: No ports are exposed on api-gateway container"
             exit 1
           fi
 
