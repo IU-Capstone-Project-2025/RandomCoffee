@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface MatchHistoryRepository extends JpaRepository<MatchHistory, UUID> {
 
-    List<MatchHistory> findAllByProfile1AndProfile2(Profile profile1, Profile profile2);
+    List<MatchHistory> findAllByProfile1OrProfile2OrderByTimestampDesc(Profile profile1, Profile profile2);
 
     List<MatchHistory> findAllByTimestampBetween(OffsetDateTime startDate, OffsetDateTime endDate);
 }

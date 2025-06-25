@@ -25,11 +25,11 @@ public interface MatchHistoryService {
     List<MatchHistory> findAllByTimestampBetween(OffsetDateTime startDate, OffsetDateTime endDate);
 
     /**
-     * Finds all match histories by the two specified profiles
+     * Finds the last match history involving the specified profile, either as profile1 or profile2
      *
-     * @param profile1 Profile 1
-     * @param profile2 Profile 2
-     * @return a list of match histories involving the two specified profiles
+     * @param profile Profile to search for matches involving either profile
+     * @return the last match history entry for the specified profile, ordered by timestamp descending
+     * @throws iu.profileservice.exception.ResourceNotFoundException if no match history is found for the profile
      */
-    List<MatchHistory> findAllByProfile1AndProfile2(Profile profile1, Profile profile2);
+    MatchHistory findLastByProfileOrderByTimestampDesc(Profile profile);
 }

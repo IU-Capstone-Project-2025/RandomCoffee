@@ -1,6 +1,7 @@
 package iu.profileservice.facade.matchhistory;
 
 import iu.profileservice.model.MatchHistoryDto;
+import iu.profileservice.model.ProfileDto;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -22,4 +23,14 @@ public interface MatchHistoryFacade {
      * @return a list of match history entries within the specified date range
      */
     List<MatchHistoryDto> getMatchesBetweenDates(OffsetDateTime startDate, OffsetDateTime endDate);
+
+    /**
+     * Retrieves the mate for a given peer ID
+     *
+     * @param peerId the ID of the peer to retrieve the match for
+     * @return the profile of the matched peer
+     * @throws iu.profileservice.exception.ResourceNotFoundException if no match is found for the given peer ID
+     * @throws iu.profileservice.exception.ResourceNotFoundException if the profile associated with the peer ID does not exist
+     */
+    ProfileDto getMatch(Long peerId);
 }

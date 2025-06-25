@@ -8,9 +8,11 @@ public interface ProfileFacade {
      * Create profile
      *
      * @param profileDto profile DTO
+     * @param peerId     peerId
      * @throws iu.profileservice.exception.ValidationException profile is present
+     * @throws iu.profileservice.exception.ValidationException peerId is not present
      */
-    void createProfile(ProfileDto profileDto);
+    void createProfile(ProfileDto profileDto, Long peerId);
 
     /**
      * Get profile
@@ -25,9 +27,11 @@ public interface ProfileFacade {
      * Update profile
      *
      * @param profileDto profile DTO
+     * @param peerId     peerId
      * @throws iu.profileservice.exception.ResourceNotFoundException profile is not present
+     * @throws iu.profileservice.exception.ValidationException       peerId is not present
      */
-    void updateProfile(ProfileDto profileDto);
+    void updateProfile(ProfileDto profileDto, Long peerId);
 
     /**
      * Delete profile
