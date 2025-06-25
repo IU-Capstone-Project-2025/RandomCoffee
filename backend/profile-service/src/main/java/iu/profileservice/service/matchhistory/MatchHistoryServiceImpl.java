@@ -2,12 +2,14 @@ package iu.profileservice.service.matchhistory;
 
 import iu.profileservice.entity.MatchHistory;
 import iu.profileservice.entity.Profile;
+import iu.profileservice.exception.ResourceNotFoundException;
 import iu.profileservice.repository.MatchHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
@@ -26,7 +28,11 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
     }
 
     @Override
-    public List<MatchHistory> findAllByProfile1AndProfile2(Profile profile1, Profile profile2) {
-        return matchHistoryRepository.findAllByProfile1AndProfile2(profile1, profile2);
+    public MatchHistory findLastByProfileOrderByTimestampDesc(Profile profile) {
+        try {
+            return matchHistoryRepository.findAllByProfile1OrProfile2OrderByTimestampDesc(profile, profile).getFirst();
+        } catch (NoSuchElementException exception) {
+            throw new ResourceNotFoundException("Match history is not present", exception);
+        }
     }
 }

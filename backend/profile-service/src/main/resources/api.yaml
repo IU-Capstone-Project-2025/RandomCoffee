@@ -17,6 +17,12 @@ paths:
       operationId: createProfile
       tags:
         - profile
+      parameters:
+        - name: peerId
+          in: header
+          schema:
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -43,6 +49,12 @@ paths:
       operationId: updateProfile
       tags:
         - profile
+      parameters:
+        - name: peerId
+          in: header
+          schema:
+            type: integer
+            format: int64
       requestBody:
         required: true
         content:
@@ -70,7 +82,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /profile/{peerId}:
     get:
       summary: Get Profile
       operationId: getProfile
@@ -79,7 +90,7 @@ paths:
       parameters:
         - name: peerId
           required: true
-          in: path
+          in: header
           schema:
             type: integer
             format: int64
@@ -116,7 +127,7 @@ paths:
       parameters:
         - name: peerId
           required: true
-          in: path
+          in: header
           schema:
             type: integer
             format: int64
@@ -374,13 +385,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+  /match-history/last-match:
+    get:
+      summary: Get last match profile
+      operationId: getMatchProfile
+      tags:
+        - matchHistory
+      parameters:
+        - name: peerId
+          required: true
+          in: header
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Match profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+        '404':
+          description: Match profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
     ProfileDto:
       type: object
       required:
-        - peerId
         - name
         - surname
         - bio
