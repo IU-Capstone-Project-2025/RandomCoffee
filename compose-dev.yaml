@@ -36,6 +36,8 @@ services:
       dockerfile: Dockerfile
     image: profile-service:latest
     pull_policy: never
+    ports:
+      - "8081:8081"
   profile-db:
     container_name: profile-db
     tty: true

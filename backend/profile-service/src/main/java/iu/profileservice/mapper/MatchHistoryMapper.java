@@ -15,5 +15,6 @@ public interface MatchHistoryMapper {
     @Mapping(target = "profile1.peerId", source = "matchHistoryDto.peerId1")
     @Mapping(target = "profile2.peerId", source = "matchHistoryDto.peerId2")
     @Mapping(target = "timestamp", expression = "java(java.time.OffsetDateTime.now())")
+    @Mapping(target = "uuid", ignore = true)
     MatchHistory toEntity(MatchHistoryDto matchHistoryDto);
 }
