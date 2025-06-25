@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Tuple
-from ml.match_making.main import GreedyMatcher 
+from match_making.main import GreedyMatcher 
 
 
 app = FastAPI()
@@ -36,3 +36,7 @@ def match_users(request: MatchRequest):
         return {"pairs": pairs}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/")
+def read_root():
+    return {"status": "healthy"}
