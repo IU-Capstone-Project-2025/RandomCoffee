@@ -1,0 +1,485 @@
+openapi: '3.0.0'
+info:
+  title: profile-service API
+  description: API for profile microservice
+  version: 1.0.0
+tags:
+  - name: profile
+    description: Profile controller
+  - name: tag
+    description: Tag controller
+  - name: matchHistory
+    description: MatchHistory controller
+paths:
+  /profile:
+    post:
+      summary: Create profile
+      operationId: createProfile
+      tags:
+        - profile
+      parameters:
+        - name: peerId
+          in: header
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDto'
+      responses:
+        '201':
+          description: Profile created
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update profile
+      operationId: updateProfile
+      tags:
+        - profile
+      parameters:
+        - name: peerId
+          in: header
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileDto'
+      responses:
+        '200':
+          description: Profile updated
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get Profile
+      operationId: getProfile
+      tags:
+        - profile
+      parameters:
+        - name: peerId
+          required: true
+          in: header
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete Profile
+      operationId: deleteProfile
+      tags:
+        - profile
+      parameters:
+        - name: peerId
+          required: true
+          in: header
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Profile deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /tag:
+    post:
+      summary: Create tag
+      operationId: createTag
+      tags:
+        - tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagDto'
+      responses:
+        '201':
+          description: Tag created
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    patch:
+      summary: Update tag
+      operationId: updateTag
+      tags:
+        - tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagDto'
+      responses:
+        '200':
+          description: Tag updated
+        '404':
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get tags by prefix
+      operationId: getTagsByPrefix
+      tags:
+        - tag
+      parameters:
+        - name: prefix
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tags found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagDto'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /tag/{name}:
+    get:
+      summary: Get Tag
+      operationId: getTag
+      tags:
+        - tag
+      parameters:
+        - name: name
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tag found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagDto'
+        '404':
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete Tag
+      operationId: deleteTag
+      tags:
+        - tag
+      parameters:
+        - name: name
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tag deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagDto'
+        '404':
+          description: Tag not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /match-history:
+    post:
+      summary: Create match
+      operationId: createMatch
+      tags:
+        - matchHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchHistoryDto'
+      responses:
+        '201':
+          description: Match created
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      summary: Get matches between dates
+      operationId: getMatchesBetweenDates
+      tags:
+        - matchHistory
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Matches found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchHistoryDto'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /match-history/last-match:
+    get:
+      summary: Get last match profile
+      operationId: getMatchProfile
+      tags:
+        - matchHistory
+      parameters:
+        - name: peerId
+          required: true
+          in: header
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Match profile found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileDto'
+        '404':
+          description: Match profile not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '418':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ProfileDto:
+      type: object
+      required:
+        - name
+        - surname
+        - bio
+      properties:
+        peerId:
+          type: integer
+          format: int64
+        name:
+          type: string
+        surname:
+          type: string
+        bio:
+          type: string
+        tags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    TagDto:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+    MatchHistoryDto:
+      type: object
+      required:
+        - peerId1
+        - peerId2
+      properties:
+        peerId1:
+          type: integer
+          format: int64
+        peerId2:
+          type: integer
+          format: int64
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string

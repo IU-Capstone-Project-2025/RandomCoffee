@@ -1,17 +1,17 @@
 name: random-coffee-app
 
 services:
-  bot-service:
-    container_name: bot-service
-    tty: true
-    env_file: ./.env
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
-    build:
-      context: ./backend/bot-service
-      dockerfile: Dockerfile
-    image: bot-service:latest
-    pull_policy: never
+  # bot-service:
+  #   container_name: bot-service
+  #   tty: true
+  #   env_file: ./.env
+  #   environment:
+  #     - BOT_TOKEN=${BOT_TOKEN}
+  #   build:
+  #     context: ./backend/bot-service
+  #     dockerfile: Dockerfile
+  #   image: bot-service:latest
+  #   pull_policy: never
   api-gateway:
     container_name: api-gateway
     tty: true
@@ -51,16 +51,16 @@ services:
       - "5432:5432"
     volumes:
       - profile-db-volume:/var/lib/postgresql/data
-  mini-app:
-    container_name: mini-app
-    tty: true
-    build:
-      context: ./mini-app
-      dockerfile: Dockerfile
-    image: mini-app:latest
-    pull_policy: never
-    ports:
-      - "3000:3000"
+  # mini-app:
+  #   container_name: mini-app
+  #   tty: true
+  #   build:
+  #     context: ./mini-app
+  #     dockerfile: Dockerfile
+  #   image: mini-app:latest
+  #   pull_policy: never
+  #   ports:
+  #     - "3000:3000"
   ml:
     container_name: ml
     tty: true

@@ -7,12 +7,17 @@ import '@telegram-apps/telegram-ui/dist/styles.css';
 import 'normalize.css/normalize.css';
 import './_assets/globals.css';
 import { on, postEvent, retrieveLaunchParams, useSignal } from '@telegram-apps/sdk-react';
+import ProfileProvider from '@/components/custom/_provider/ProfileProvider';
 
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html suppressHydrationWarning>
       <body>
-        <Root>{children}</Root>
+        <Root>
+          {/* <ProfileProvider> */}
+            {children}
+          {/* </ProfileProvider> */}
+        </Root>
       </body>
     </html>
   );
