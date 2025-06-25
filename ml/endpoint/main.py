@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import List, Dict, Optional, Tuple
-from ml.match_making.main import GreedyMatcher 
+from match_making.main import GreedyMatcher 
 
 
 app = FastAPI()
