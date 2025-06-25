@@ -2,7 +2,7 @@ spring:
   application:
     name: "API-gateway"
 profile-service:
-  url: "http://profile-service:8081"
+  url: "http://localhost:8081"
 mini-app:
   authorization:
     header-name: "Authorization"

@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="local" />
     <module name="API-gateway" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.apigateway.ApiGatewayApplication" />
     <method v="2">
