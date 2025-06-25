@@ -36,3 +36,7 @@ def match_users(request: MatchRequest):
         return {"pairs": pairs}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/")
+def read_root():
+    return {"status": "healthy"}
