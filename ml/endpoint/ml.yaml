@@ -1,0 +1,105 @@
+openapi: '3.0.0'
+info:
+  title: ml API
+  description: API for ml
+  version: 1.0.0
+tags:
+  - name: matchmaking
+    description: Matchmaking controller
+paths:
+  /matchmaking:
+    get:
+      summary: Matchmaking
+      operationId: matchmaking
+      tags:
+        - matchmaking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MatchmakingRequest'
+      responses:
+        '201':
+          description: Matchmaking created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchHistoryDto'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    MatchHistoryDto:
+      type: object
+      required:
+        - peerId1
+        - peerId2
+      properties:
+        peerId1:
+          type: integer
+          format: int64
+        peerId2:
+          type: integer
+          format: int64
+        timestamp:
+          type: string
+          format: date-time
+    ProfileRequest:
+      type: object
+      required:
+        - peerId
+        - bio
+      properties:
+        peerId:
+          type: integer
+          format: int64
+        bio:
+          type: string
+        tags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    MatchmakingRequest:
+      type: object
+      required:
+        - usersData
+      properties:
+        usersData:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileRequest'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchHistoryDto'
+    ErrorResponse:
+      type: object
+      required:
+        - timestamp
+        - status
+        - error
+        - path
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: integer
+        error:
+          type: string
+        path:
+          type: string

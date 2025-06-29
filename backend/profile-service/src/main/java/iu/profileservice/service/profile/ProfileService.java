@@ -2,6 +2,7 @@ package iu.profileservice.service.profile;
 
 import iu.profileservice.entity.Profile;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProfileService {
@@ -38,4 +39,11 @@ public interface ProfileService {
      * @throws iu.profileservice.exception.ResourceNotFoundException profile is not present
      */
     Profile deleteProfile(Long peerId);
+
+    /**
+     * Find all profiles
+     *
+     * @return all profiles
+     */
+    List<Profile> findAll();
 }

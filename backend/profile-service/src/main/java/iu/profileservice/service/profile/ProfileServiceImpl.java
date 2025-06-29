@@ -7,6 +7,7 @@ import iu.profileservice.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -41,5 +42,10 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public Optional<Profile> findById(Long peerId) {
         return profileRepository.findById(peerId);
+    }
+
+    @Override
+    public List<Profile> findAll() {
+        return profileRepository.findAll();
     }
 }

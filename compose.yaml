@@ -53,3 +53,5 @@ services:
     tty: true
     image: mituta/ml:latest
     platform: linux/x86_64
+    ports:
+      - "8000:8000"
