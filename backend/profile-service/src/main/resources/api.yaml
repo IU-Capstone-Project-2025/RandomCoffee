@@ -10,7 +10,45 @@ tags:
     description: Tag controller
   - name: matchHistory
     description: MatchHistory controller
+  - name: matchmaking
+    description: Matchmaking controller
+
+# TODO peerId is not securely got
 paths:
+  /matchmaking:
+    get:
+      summary: Matchmaking
+      operationId: matchmaking
+      tags:
+        - matchmaking
+      responses:
+        '201':
+          description: Matchmaking created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MatchHistoryDto'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: ML service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /profile:
     post:
       summary: Create profile
@@ -38,7 +76,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -76,7 +114,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -113,7 +151,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -150,7 +188,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -178,7 +216,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -210,7 +248,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -241,7 +279,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -278,7 +316,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -314,7 +352,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -342,7 +380,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -379,7 +417,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -417,7 +455,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-        '418':
+        '500':
           description: Unexpected error
           content:
             application/json:
@@ -466,6 +504,38 @@ components:
         peerId2:
           type: integer
           format: int64
+        timestamp:
+          type: string
+          format: date-time
+    ProfileRequest:
+      type: object
+      required:
+        - peerId
+        - bio
+      properties:
+        peerId:
+          type: integer
+          format: int64
+        bio:
+          type: string
+        tags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+    MatchmakingRequest:
+      type: object
+      required:
+        - usersData
+      properties:
+        usersData:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProfileRequest'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/MatchHistoryDto'
     ErrorResponse:
       type: object
       required:

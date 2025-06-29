@@ -18,8 +18,8 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
     private final MatchHistoryRepository matchHistoryRepository;
 
     @Override
-    public void createMatch(MatchHistory matchHistory) {
-        matchHistoryRepository.save(matchHistory);
+    public MatchHistory createMatch(MatchHistory matchHistory) {
+        return matchHistoryRepository.save(matchHistory);
     }
 
     @Override

@@ -29,7 +29,7 @@ class ErrorResponse(BaseModel):
 
 matcher = GreedyMatcher()
 
-@app.get("/matchmaking", response_model=List[MatchHistoryDto], status_code=201)
+@app.post("/matchmaking", response_model=List[MatchHistoryDto], status_code=201)
 def matchmaking(request: MatchmakingRequest):
     """
     Matchmaking endpoint that creates matches between users based on their profiles and history.

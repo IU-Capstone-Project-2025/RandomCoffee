@@ -13,3 +13,6 @@ spring:
     database: postgresql
 server:
   port: 8081
+ml:
+  client:
+    url: "http://localhost:8000"
