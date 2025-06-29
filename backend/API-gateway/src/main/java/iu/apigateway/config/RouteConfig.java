@@ -46,14 +46,12 @@ public class RouteConfig {
                         .path("/tag")
                         .and()
                         .method(HttpMethod.POST, HttpMethod.GET)
-                        .filters(f -> f.removeRequestHeader(authorizationHeaderName))
                         .uri(profileServiceUrl)
                 )
                 .route(p -> p
                         .path("/tag/*")
                         .and()
                         .method(HttpMethod.GET)
-                        .filters(f -> f.removeRequestHeader(authorizationHeaderName))
                         .uri(profileServiceUrl)
                 )
                 .route(p -> p
