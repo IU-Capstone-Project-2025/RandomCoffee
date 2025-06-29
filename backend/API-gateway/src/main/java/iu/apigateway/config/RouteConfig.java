@@ -35,7 +35,7 @@ public class RouteConfig {
                 .route(p -> p
                         .path("/profile")
                         .and()
-                        .method(HttpMethod.POST, HttpMethod.PATCH, HttpMethod.GET)
+                        .method(HttpMethod.POST, HttpMethod.PATCH, HttpMethod.GET, HttpMethod.OPTIONS)
                         .filters(f -> f
                                 .filter(handleAuthorizationHeader())
                                 .removeRequestHeader(authorizationHeaderName)
@@ -45,19 +45,21 @@ public class RouteConfig {
                 .route(p -> p
                         .path("/tag")
                         .and()
-                        .method(HttpMethod.POST, HttpMethod.GET)
+                        .method(HttpMethod.POST, HttpMethod.GET, HttpMethod.OPTIONS)
+                        .filters(f -> f.removeRequestHeader(authorizationHeaderName))
                         .uri(profileServiceUrl)
                 )
                 .route(p -> p
                         .path("/tag/*")
                         .and()
-                        .method(HttpMethod.GET)
+                        .method(HttpMethod.GET, HttpMethod.OPTIONS)
+                        .filters(f -> f.removeRequestHeader(authorizationHeaderName))
                         .uri(profileServiceUrl)
                 )
                 .route(p -> p
                         .path("/match-history/last-match")
                         .and()
-                        .method(HttpMethod.GET)
+                        .method(HttpMethod.GET, HttpMethod.OPTIONS)
                         .filters(f -> f
                                 .filter(handleAuthorizationHeader())
                                 .removeRequestHeader(authorizationHeaderName)
