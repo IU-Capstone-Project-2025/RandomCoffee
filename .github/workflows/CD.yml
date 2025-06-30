@@ -54,3 +54,15 @@ jobs:
           context: ./ml
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml:latest
+
+      - name: Restart services on production server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.PROD_HOST }}
+        username: ${{ secrets.PROD_USER }}
+        port: ${{ secrets.PROD_PORT }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd random-coffee/prod
+          docker compose pull
+          docker compose up -d
