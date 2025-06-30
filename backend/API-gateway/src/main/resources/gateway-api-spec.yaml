@@ -1,7 +1,7 @@
 openapi: '3.0.0'
 info:
-  title: profile-service API
-  description: API for profile microservice
+  title: API Gateway
+  description: API exposed through the API Gateway with routing configuration applied
   version: 1.0.0
 tags:
   - name: profile
@@ -10,45 +10,8 @@ tags:
     description: Tag controller
   - name: matchHistory
     description: MatchHistory controller
-  - name: matchmaking
-    description: Matchmaking controller
 
-# TODO peerId is not securely got
 paths:
-  /matchmaking:
-    get:
-      summary: Matchmaking
-      operationId: matchmaking
-      tags:
-        - matchmaking
-      responses:
-        '201':
-          description: Matchmaking created
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MatchHistoryDto'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '503':
-          description: ML service unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
   /profile:
     post:
       summary: Create profile
@@ -56,11 +19,11 @@ paths:
       tags:
         - profile
       parameters:
-        - name: peerId
+        - name: Authorization
           in: header
+          required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         required: true
         content:
@@ -88,11 +51,11 @@ paths:
       tags:
         - profile
       parameters:
-        - name: peerId
+        - name: Authorization
           in: header
+          required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       requestBody:
         required: true
         content:
@@ -126,52 +89,14 @@ paths:
       tags:
         - profile
       parameters:
-        - name: peerId
-          required: true
+        - name: Authorization
           in: header
+          required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
           description: Profile found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProfileDto'
-        '404':
-          description: Profile not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    delete:
-      summary: Delete Profile
-      operationId: deleteProfile
-      tags:
-        - profile
-      parameters:
-        - name: peerId
-          required: true
-          in: header
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Profile deleted
           content:
             application/json:
               schema:
@@ -210,38 +135,6 @@ paths:
       responses:
         '201':
           description: Tag created
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    patch:
-      summary: Update tag
-      operationId: updateTag
-      tags:
-        - tag
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TagDto'
-      responses:
-        '200':
-          description: Tag updated
-        '404':
-          description: Tag not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
         '400':
           description: Bad request
           content:
@@ -322,107 +215,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-    delete:
-      summary: Delete Tag
-      operationId: deleteTag
-      tags:
-        - tag
-      parameters:
-        - name: name
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Tag deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TagDto'
-        '404':
-          description: Tag not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
 
-  /match-history:
-    post:
-      summary: Create match
-      operationId: createMatch
-      tags:
-        - matchHistory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MatchHistoryDto'
-      responses:
-        '201':
-          description: Match created
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-    get:
-      summary: Get matches between dates
-      operationId: getMatchesBetweenDates
-      tags:
-        - matchHistory
-      parameters:
-        - name: startDate
-          in: query
-          schema:
-            type: string
-            format: date-time
-        - name: endDate
-          in: query
-          schema:
-            type: string
-            format: date-time
-      responses:
-        '200':
-          description: Matches found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/MatchHistoryDto'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
-          description: Unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
   /match-history/last-match:
     get:
       summary: Get last match profile
@@ -430,12 +223,11 @@ paths:
       tags:
         - matchHistory
       parameters:
-        - name: peerId
-          required: true
+        - name: Authorization
           in: header
+          required: true
           schema:
-            type: integer
-            format: int64
+            type: string
       responses:
         '200':
           description: Match profile found
@@ -492,50 +284,6 @@ components:
       properties:
         name:
           type: string
-    MatchHistoryDto:
-      type: object
-      required:
-        - peerId1
-        - peerId2
-      properties:
-        peerId1:
-          type: integer
-          format: int64
-        peerId2:
-          type: integer
-          format: int64
-        timestamp:
-          type: string
-          format: date-time
-    ProfileRequest:
-      type: object
-      required:
-        - peerId
-        - bio
-      properties:
-        peerId:
-          type: integer
-          format: int64
-        bio:
-          type: string
-        tags:
-          type: array
-          uniqueItems: true
-          items:
-            type: string
-    MatchmakingRequest:
-      type: object
-      required:
-        - usersData
-      properties:
-        usersData:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProfileRequest'
-        history:
-          type: array
-          items:
-            $ref: '#/components/schemas/MatchHistoryDto'
     ErrorResponse:
       type: object
       required:

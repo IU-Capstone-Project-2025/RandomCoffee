@@ -3,6 +3,7 @@ package iu.profileservice.mapper;
 import iu.profileservice.entity.Profile;
 import iu.profileservice.entity.Tag;
 import iu.profileservice.model.ProfileDto;
+import iu.profileservice.model.ProfileRequest;
 import iu.profileservice.service.tag.TagService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,6 +23,9 @@ public abstract class ProfileMapper {
 
     @Mapping(target = "tags", expression = "java(tagService.findAllByNamesIn(profileDto.getTags()))")
     public abstract Profile toEntity(ProfileDto profileDto);
+
+    @Mapping(target = "tags", expression = "java(toDtoTags(profile.getTags()))")
+    public abstract ProfileRequest toRequest(Profile profile);
 
     protected Set<String> toDtoTags(Set<Tag> tags) {
         return tags.stream()

@@ -69,6 +69,8 @@ services:
       dockerfile: Dockerfile
     image: ml:latest
     pull_policy: never
+    ports:
+      - "8000:8000"
 
 volumes:
   profile-db-volume:

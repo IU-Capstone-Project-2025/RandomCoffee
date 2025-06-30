@@ -1,5 +1,6 @@
 package iu.profileservice.advice;
 
+import feign.RetryableException;
 import iu.profileservice.exception.ResourceNotFoundException;
 import iu.profileservice.exception.ValidationException;
 import iu.profileservice.model.ErrorResponse;
@@ -9,7 +10,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,9 +27,10 @@ public class ControllerAdvice {
     @ExceptionHandler({
             DataIntegrityViolationException.class,
             InvalidDataAccessApiUsageException.class,
-            ValidationException.class
+            ValidationException.class,
+            MissingRequestHeaderException.class
     })
-    public ResponseEntity<ErrorResponse> handleDataException(RuntimeException exception,
+    public ResponseEntity<ErrorResponse> handleDataException(Exception exception,
                                                              HttpServletRequest request) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
@@ -69,16 +73,46 @@ public class ControllerAdvice {
                 );
     }
 
-    @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<ErrorResponse> handleMethodNotSupportedException(HttpMediaTypeNotSupportedException exception,
+                                                                           HttpServletRequest request) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity
+                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+                .body(new ErrorResponse()
+                        .timestamp(OffsetDateTime.now())
+                        .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+                        .error(exception.getMessage())
+                        .path(request.getRequestURI())
+                );
+    }
+
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    @ExceptionHandler(RetryableException.class)
+    public ResponseEntity<ErrorResponse> handleRetryableException(RetryableException exception,
+                                                                  HttpServletRequest request) {
+        log.warn(exception.getMessage(), exception);
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(new ErrorResponse()
+                        .timestamp(OffsetDateTime.now())
+                        .status(HttpStatus.SERVICE_UNAVAILABLE.value())
+                        .error(exception.getMessage())
+                        .path(request.getRequestURI())
+                );
+    }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneralException(Exception exception,
                                                                 HttpServletRequest request) {
         log.error(exception.getMessage(), exception);
         return ResponseEntity
-                .status(HttpStatus.I_AM_A_TEAPOT)
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse()
                         .timestamp(OffsetDateTime.now())
-                        .status(HttpStatus.I_AM_A_TEAPOT.value())
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                         .error(exception.getMessage())
                         .path(request.getRequestURI())
                 );

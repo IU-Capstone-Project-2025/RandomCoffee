@@ -12,8 +12,9 @@ public interface MatchHistoryService {
      * Creates a new match history entry
      *
      * @param matchHistory the match history to create
+     * @return the created match history entry
      */
-    void createMatch(MatchHistory matchHistory);
+    MatchHistory createMatch(MatchHistory matchHistory);
 
     /**
      * Finds all match histories between the specified timestamps
