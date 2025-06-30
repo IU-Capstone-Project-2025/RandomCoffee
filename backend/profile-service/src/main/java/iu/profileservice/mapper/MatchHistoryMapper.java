@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 public interface MatchHistoryMapper {
 
     @Mapping(target = "peerId1", source = "matchHistory.profile1.peerId")
-    @Mapping(target = "peerId2", source = "matchHistory.profile1.peerId")
+    @Mapping(target = "peerId2", source = "matchHistory.profile2.peerId")
     MatchHistoryDto toDto(MatchHistory matchHistory);
 
     @Mapping(target = "profile1.peerId", source = "matchHistoryDto.peerId1")

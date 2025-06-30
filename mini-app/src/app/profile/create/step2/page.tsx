@@ -153,7 +153,7 @@ export default function Step2Tags() {
             });
         })
         return () => removeListener();
-    }, [firstName, lastName, bio]);
+    }, [firstName, lastName, bio, tags]);
 
     return (
         <Page back={true}>
