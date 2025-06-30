@@ -1,3 +1,18 @@
 spring:
   application:
     name: "profile-service"
+  datasource:
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    url: "jdbc:postgresql://profile-db:5432/profile-db"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database: postgresql
+server:
+  port: 8081
+ml:
+  client:
+    url: "http://ml:8000"

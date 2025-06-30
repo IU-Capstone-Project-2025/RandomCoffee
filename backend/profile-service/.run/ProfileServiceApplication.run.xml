@@ -1,6 +1,13 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ProfileServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" activateToolWindowBeforeRun="false" nameIsGenerated="true">
+    <option name="ACTIVE_PROFILES" value="local" />
+    <option name="envFilePaths">
+      <option value="$PROJECT_DIR$/../../.env" />
+    </option>
     <module name="profile-service" />
+    <selectedOptions>
+      <option name="environmentVariables" />
+    </selectedOptions>
     <option name="SPRING_BOOT_MAIN_CLASS" value="iu.profileservice.ProfileServiceApplication" />
     <method v="2">
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="clean install" run_configuration_type="MavenRunConfiguration" />

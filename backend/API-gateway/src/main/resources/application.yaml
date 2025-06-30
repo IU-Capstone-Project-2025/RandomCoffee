@@ -1,3 +1,24 @@
 spring:
   application:
     name: "API-gateway"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOriginPatterns: "*"
+                allowedMethods: "*"
+                allowedHeaders: "*"
+                allowCredentials: false
+                maxAge: 3600
+                exposedHeaders:
+                  - "Content-Length"
+                  - "Authorization"
+            add-to-simple-url-handler-mapping: true
+profile-service:
+  url: "http://profile-service:8081"
+mini-app:
+  authorization:
+    header-name: "Authorization"

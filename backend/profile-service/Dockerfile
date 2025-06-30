@@ -16,4 +16,6 @@ RUN ./mvnw clean install
 FROM amazoncorretto:21-alpine
 WORKDIR /app
 COPY --from=builder /build/target/*.jar ./app.jar
+EXPOSE 8081
+EXPOSE 5005
 ENTRYPOINT ["java", "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005", "-jar", "app.jar"]

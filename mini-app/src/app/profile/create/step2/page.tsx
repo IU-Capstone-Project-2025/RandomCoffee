@@ -7,7 +7,7 @@ import { on, postEvent } from '@telegram-apps/sdk';
 import { Button, LargeTitle, Placeholder, Text, Title, Input, List, Section, IconContainer, Cell, Steps, Caption, Subheadline, Textarea, Chip } from "@telegram-apps/telegram-ui";
 import { SectionFooter } from "@telegram-apps/telegram-ui/dist/components/Blocks/Section/components/SectionFooter/SectionFooter";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useProfileCreationStore } from "@/store/profileCreationStore";
 import TagChip from "@/components/custom/tag/TagChip";
 import { SectionHeader } from "@telegram-apps/telegram-ui/dist/components/Blocks/Section/components/SectionHeader/SectionHeader";
@@ -17,88 +17,25 @@ import { ModalHeader } from "@telegram-apps/telegram-ui/dist/components/Overlays
 import { ModalOverlay } from "@telegram-apps/telegram-ui/dist/components/Overlays/Modal/components/ModalOverlay/ModalOverlay";
 import FancyModal from "@/components/custom/modal/FancyModal";
 import { useRouter } from "next/navigation";
-
-interface UserInfo {
-    firstName: string;
-    lastName: string;
-    bio: string;
-}
+import TagService from "@/api/tag/service/TagService";
+import ProfileService from "@/api/profile/service/ProfileService";
 
 interface TagInfo {
     label: string;
     valid: boolean;
 }
 
-const tagsLibrary = [
-    "Java",
-    "Go",
-    "Backend",
-    "Frontend",
-    "Fullstack",
-    "Mobile",
-    "DevOps",
-    "AI",
-    "Machine Learning",
-    "Python",
-    "JavaScript",
-    "TypeScript",
-    "React",
-    "Node.js",
-    "Next.js",
-    "Tailwind CSS",
-    "Spring Boot",
-    "PostgreSQL",
-    "MySQL",
-    "MongoDB",
-    "Redis",
-    "Docker",
-    "Kubernetes",
-    "AWS",
-    "RabbitMQ",
-    "Kafka",
-    "Elasticsearch",
-    "Kibana",
-    "Logstash",
-    "GCP",
-    "Azure",
-    "Linux",
-    "Windows",
-    "MacOS",
-    "iOS",
-    "Android",
-    "Flutter",
-    "React Native",
-    "Swift",
-    "Kotlin",
-    "C#",
-    "C++",
-    "C",
-    "PHP",
-    "Ruby",
-    "Unity",
-    "Unreal Engine",
-    "Blender",
-]
-
 export default function Step2Tags() {
     const router = useRouter();
     const { firstName, lastName, bio } = useProfileCreationStore();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [tags, setTags] = useState<TagInfo[]>([
-        {
-            label: "Java",
-            valid: true,
-        },
-        {
-            label: "Go",
-            valid: true,
-        },
-        {
-            label: "Backend",
-            valid: true,
-        }
-    ]);
+    const [tags, setTags] = useState<TagInfo[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [cachedTags, setCachedTags] = useState<Set<string>>(new Set());
+    const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const initData = useSignal(initDataState);
 
     const removeTag = (label: string) => {
         setTags(tags.filter((tag) => tag.label !== label));
@@ -109,6 +46,60 @@ export default function Step2Tags() {
         setSearchQuery("");
         setIsModalOpen(false);
     }
+
+    const searchTags = async (query: string) => {
+        if (query.length < 2) {
+            setSuggestedTags([]);
+            return;
+        }
+        
+        setIsLoading(true);
+        try {
+            const res = await TagService.getTags(query);
+            
+            if (res) {
+                // Extract tag names from the API response
+                const newTags = res.map(tag => tag.name);
+                
+                // Filter out tags that are already in the cachedTags set
+                const uniqueNewTags = newTags.filter(name => !cachedTags.has(name));
+                
+                // Update the cachedTags set with the new tags
+                setCachedTags(prev => new Set([...prev, ...uniqueNewTags]));
+                
+                // Update the suggestedTags array with all tags matching the current query
+                setSuggestedTags(newTags);
+            }
+        } catch (error) {
+            console.error("Error fetching tags:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    // Add debounced search effect
+    useEffect(() => {
+        if (searchQuery.length > 1) {
+            // Clear any existing timeout
+            if (searchTimeoutRef.current) {
+                clearTimeout(searchTimeoutRef.current);
+            }
+            
+            // Set a new timeout
+            searchTimeoutRef.current = setTimeout(() => {
+                searchTags(searchQuery);
+            }, 500);
+        } else {
+            setSuggestedTags([]);
+        }
+        
+        // Cleanup function to clear the timeout when component unmounts or searchQuery changes
+        return () => {
+            if (searchTimeoutRef.current) {
+                clearTimeout(searchTimeoutRef.current);
+            }
+        };
+    }, [searchQuery]);
 
     useEffect(() => {
         if (isModalOpen) {
@@ -148,10 +139,21 @@ export default function Step2Tags() {
 
     useEffect(() => {
         const removeListener = on('main_button_pressed', payload => {
-            router.push('/profile/create/success');
+            ProfileService.createProfile({
+                peerId: initData?.user?.id || 0,
+                name: firstName,
+                surname: lastName,
+                bio: bio,
+                tags: tags.map((tag) => tag.label)
+            }).then(() => {
+                router.push('/profile/create/success');
+            }).catch((error) => {
+                console.error(error);
+                // TODO: show error to user
+            });
         })
         return () => removeListener();
-    }, [firstName, lastName, bio]);
+    }, [firstName, lastName, bio, tags]);
 
     return (
         <Page back={true}>
@@ -205,15 +207,13 @@ export default function Step2Tags() {
                         Suggested tags
                     </SectionHeader>
                     <div className="flex flex-wrap gap-2">
-                        {searchQuery.length > 1 ? 
-                            (() => {
-                                const filteredTags = tagsLibrary.filter((tag) => 
-                                    tag.toLowerCase().includes(searchQuery.toLowerCase()) && 
-                                    !tags.some((t) => t.label === tag)
-                                );
-                                
-                                return filteredTags.length > 0 ? 
-                                    filteredTags.map((tag) => (
+                        {searchQuery.length > 1 ? (
+                            isLoading ? (
+                                <Chip mode="outline">Loading...</Chip>
+                            ) : suggestedTags.length > 0 ? (
+                                suggestedTags
+                                    .filter(tag => !tags.some(t => t.label === tag))
+                                    .map(tag => (
                                         <Chip 
                                             mode="elevated" 
                                             key={tag}
@@ -221,11 +221,13 @@ export default function Step2Tags() {
                                         >
                                             {tag}
                                         </Chip>
-                                    )) 
-                                    : <Chip mode="outline">No matching tags found</Chip>;
-                            })()
-                            : <Chip mode="outline">Start typing to see suggestions</Chip>
-                        }
+                                    ))
+                            ) : (
+                                <Chip mode="outline">No matching tags found</Chip>
+                            )
+                        ) : (
+                            <Chip mode="outline">Start typing to see suggestions</Chip>
+                        )}
                     </div>
                 </div>
                     </List>

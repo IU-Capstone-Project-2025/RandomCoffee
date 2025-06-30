@@ -4,10 +4,14 @@ services:
   bot-service:
     container_name: bot-service
     tty: true
+    env_file: ./.env
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
     build:
       context: ./backend/bot-service
       dockerfile: Dockerfile
     image: bot-service:latest
+    pull_policy: never
   api-gateway:
     container_name: api-gateway
     tty: true
@@ -15,13 +19,38 @@ services:
       context: ./backend/API-gateway
       dockerfile: Dockerfile
     image: api-gateway:latest
+    pull_policy: never
+    ports:
+      - "8080:8080"
   profile-service:
     container_name: profile-service
     tty: true
+    depends_on:
+      - profile-db
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build:
       context: ./backend/profile-service
       dockerfile: Dockerfile
     image: profile-service:latest
+    pull_policy: never
+    ports:
+      - "8081:8081"
+  profile-db:
+    container_name: profile-db
+    tty: true
+    image: postgres:latest
+    env_file: ./.env
+    environment:
+      - POSTGRES_DB=profile-db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - profile-db-volume:/var/lib/postgresql/data
   mini-app:
     container_name: mini-app
     tty: true
@@ -29,6 +58,7 @@ services:
       context: ./mini-app
       dockerfile: Dockerfile
     image: mini-app:latest
+    pull_policy: never
     ports:
       - "3000:3000"
   ml:
@@ -38,3 +68,9 @@ services:
       context: ./ml
       dockerfile: Dockerfile
     image: ml:latest
+    pull_policy: never
+    ports:
+      - "8000:8000"
+
+volumes:
+  profile-db-volume:

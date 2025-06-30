@@ -13,7 +13,9 @@ export default function ProfileCreatedPage() {
         <Page back={false} primaryColoredBackground={false}>
             <div className="flex flex-col items-center justify-center h-screen" style={{ backgroundColor: 'var(--tg-theme-secondary-bg-color)' }}>
                 <Placeholder
-                    action={<Button size="l" stretched onClick={() => router.push('/')}>To the app!</Button>}
+                    action={<Button size="l" stretched onClick={() => {
+                        window.location.href = "/"
+                    }}>To the app!</Button>}
                     description="Congratulations! Your profile has been created successfully. Now you can proceed to the app."
                     header="Profile created!"
                 >
