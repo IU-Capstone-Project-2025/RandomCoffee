@@ -18,12 +18,7 @@ import { ModalOverlay } from "@telegram-apps/telegram-ui/dist/components/Overlay
 import FancyModal from "@/components/custom/modal/FancyModal";
 import { useRouter } from "next/navigation";
 import TagService from "@/api/tag/service/TagService";
-
-interface UserInfo {
-    firstName: string;
-    lastName: string;
-    bio: string;
-}
+import ProfileService from "@/api/profile/service/ProfileService";
 
 interface TagInfo {
     label: string;
@@ -40,6 +35,7 @@ export default function Step2Tags() {
     const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const initData = useSignal(initDataState);
 
     const removeTag = (label: string) => {
         setTags(tags.filter((tag) => tag.label !== label));
@@ -143,7 +139,18 @@ export default function Step2Tags() {
 
     useEffect(() => {
         const removeListener = on('main_button_pressed', payload => {
-            router.push('/profile/create/success');
+            ProfileService.createProfile({
+                peerId: initData?.user?.id || 0,
+                name: firstName,
+                surname: lastName,
+                bio: bio,
+                tags: tags.map((tag) => tag.label)
+            }).then(() => {
+                router.push('/profile/create/success');
+            }).catch((error) => {
+                console.error(error);
+                // TODO: show error to user
+            });
         })
         return () => removeListener();
     }, [firstName, lastName, bio]);

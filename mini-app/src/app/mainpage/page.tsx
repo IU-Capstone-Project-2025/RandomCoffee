@@ -8,6 +8,9 @@ import MeetPoll from "./_components/meet-poll/MeetPoll";
 import { initDataRaw as _initDataRaw, postEvent, retrieveLaunchParams, RetrieveLPResult, useSignal } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import { init } from "@/core/init";
+import TopScreenWhitespace from "@/components/custom/layout/TopScreenWhitespace";
+import { useProfileStore } from "@/store/profileStore";
+import MatchCardContainer from "./_components/matchcard/MatchCardContainer";
 
 const subtitles = [
     "Welcome to the RandomCoffee",
@@ -20,12 +23,15 @@ const subtitles = [
 ]
 
 export default function MainPage() {
+    const { profile } = useProfileStore();
+    
     return (
         <Page back={false}>
-            <div className="mt-24 mb-20 p-4 flex flex-col gap-4">
+            <TopScreenWhitespace />
+            <div className="mb-20 p-4 flex flex-col gap-4">
                 <div>
                     <Title weight="1" level="1" className="">
-                        Hello, Alexander!
+                        Hello, {profile?.name}!
                     </Title>
                     <Title weight="1" level="3" className="mb-2 -mt-1" style={{
                         color: 'var(--tg-theme-hint-color)'
@@ -33,8 +39,7 @@ export default function MainPage() {
                         {subtitles[Math.floor(Math.random() * subtitles.length)]}
                     </Title>
                 </div>
-                <MatchCard />
-                <MeetPoll />
+                <MatchCardContainer />
             </div>
             <Tabbar className="pb-5">
                 <Tabbar.Item

@@ -6,6 +6,7 @@ import { create } from "zustand";
 import { useProfileStore } from "@/store/profileStore";
 import { useInitDataRawStore } from "@/store/initDataStore";
 import ProfileService from "@/api/profile/service/ProfileService";
+import { AxiosError } from "axios";
 
 export default function ProfileProvider({ children }: { children: React.ReactNode }) {
     const initDataRaw = useSignal(_initDataRaw);
@@ -19,9 +20,16 @@ export default function ProfileProvider({ children }: { children: React.ReactNod
                 if (response) {
                     setProfile(response);
                 }
-                setProfileLoaded(true);
             }).catch((error) => {
+                if (error instanceof AxiosError) {
+                    if (error.response?.status === 404) {
+                        return;
+                    }
+                }
                 console.error(error);
+                // TODO: show error to user
+            }).finally(() => {
+                setProfileLoaded(true);
             });
         }
     }, [initDataRaw, setInitDataRaw]);
