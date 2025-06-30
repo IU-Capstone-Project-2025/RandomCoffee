@@ -17,7 +17,7 @@ export default function MatchCardNoMatch() {
                 No match this week!
             </Title>
             <Text weight="3" className="mt-2 mb-4 px-4">
-                Sorry, but we couldn't find a coffemate for you this week. Come back next week to find a new one!
+                Sorry, but we couldn&apos;t find a coffemate for you this week. Come back next week to find a new one!
             </Text>
         </Card>
     )
