@@ -15,4 +15,4 @@ server:
   port: 8081
 ml:
   client:
-    url: "http://ml:8000"
+    url: "http://${ML_HOST:ml}:8000"
