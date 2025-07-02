@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [ DEVOP/1 ]
+    branches: [ main ]
 
 jobs:
   build-and-push:
@@ -56,12 +56,12 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml:latest
 
       - name: Restart services on production server
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.PROD_HOST }}
-        username: ${{ secrets.PROD_USER }}
-        port: ${{ secrets.PROD_PORT }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: |
-          cd ~/prod
-          docker compose up -d
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.PROD_HOST }}
+          username: ${{ secrets.PROD_USER }}
+          port: ${{ secrets.PROD_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/prod
+            docker compose up -d
