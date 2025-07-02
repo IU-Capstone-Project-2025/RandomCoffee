@@ -18,7 +18,7 @@ spring:
                   - "Authorization"
             add-to-simple-url-handler-mapping: true
 profile-service:
-  url: "http://profile-service:8081"
+  url: "http://${PROFILE_SERVICE_HOST:profile-service}:8081"
 mini-app:
   authorization:
     header-name: "Authorization"
