@@ -2,7 +2,7 @@ import { useInitDataRawStore } from "@/store/initDataStore";
 import axios, {Axios, AxiosInstance, InternalAxiosRequestConfig} from "axios";
 
 export default class AxiosFactory {
-    static readonly BASE_URL = "http://10.66.66.2:8080";
+    static readonly BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
     public static createAxiosInstance(baseUrl: string): AxiosInstance {
         const axiosInstance = axios.create({
