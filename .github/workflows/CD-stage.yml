@@ -1,11 +1,11 @@
-name: CD
+name: CD-stage
 
 on:
   push:
-    branches: [ main ]
+    branches: [ dev ]
 
 jobs:
-  build-and-push:
+  build-and-push-stage:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,48 +20,48 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
-      - name: Build and push bot-service
+      - name: Build and push bot-service (stage)
         uses: docker/build-push-action@v6
         with:
           context: ./backend/bot-service
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bot-service:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bot-service-stage:latest
 
-      - name: Build and push api-gateway
+      - name: Build and push api-gateway (stage)
         uses: docker/build-push-action@v6
         with:
           context: ./backend/API-gateway
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway-stage:latest
 
-      - name: Build and push profile-service
+      - name: Build and push profile-service (stage)
         uses: docker/build-push-action@v6
         with:
           context: ./backend/profile-service
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/profile-service:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/profile-service-stage:latest
 
-      - name: Build and push mini-app
+      - name: Build and push mini-app (stage)
         uses: docker/build-push-action@v6
         with:
           context: ./mini-app
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mini-app:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mini-app-stage:latest
 
-      - name: Build and push ml
+      - name: Build and push ml (stage)
         uses: docker/build-push-action@v6
         with:
           context: ./ml
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml-stage:latest 
 
-      - name: Restart services on production server
+      - name: Restart services on stage server
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USER }}
-          port: ${{ secrets.PROD_PORT }}
+          host: ${{ secrets.STAGE_HOST }}
+          username: ${{ secrets.STAGE_USER }}
+          port: ${{ secrets.STAGE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/prod
+            cd ~/stage
             docker compose up -d
