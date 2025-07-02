@@ -2,7 +2,7 @@ name: CD-stage
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ DEVOP/1 ]
 
 jobs:
   build-and-push-stage:
