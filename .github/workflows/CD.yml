@@ -63,6 +63,5 @@ jobs:
         port: ${{ secrets.PROD_PORT }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          cd random-coffee/prod
-          docker compose pull
+          cd ~/prod
           docker compose up -d

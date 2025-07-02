@@ -63,6 +63,5 @@ jobs:
           port: ${{ secrets.STAGE_PORT }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd random-coffee/stage
-            docker compose pull
+            cd ~/stage
             docker compose up -d
