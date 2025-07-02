@@ -4,7 +4,7 @@ spring:
   datasource:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-    url: "jdbc:postgresql://profile-db:5432/profile-db"
+    url: "jdbc:postgresql://${POSTGRES_HOST:profile-db}:5432/profile-db"
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
