@@ -47,6 +47,8 @@ jobs:
           context: ./mini-app
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mini-app:latest
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=https://api.therandomcoffee.ru
 
       - name: Build and push ml
         uses: docker/build-push-action@v6

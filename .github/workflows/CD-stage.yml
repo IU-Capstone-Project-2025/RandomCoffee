@@ -54,6 +54,8 @@ jobs:
           context: ./ml
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/ml-stage:latest 
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=https://stage.api.therandomcoffee.ru
 
       - name: Restart services on stage server
         uses: appleboy/ssh-action@v1.0.3
