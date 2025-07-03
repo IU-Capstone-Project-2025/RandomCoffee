@@ -3,12 +3,12 @@ import PromiseCache from "@/api/PromiseCache";
 import { TagDTO } from "../dto/TagDTO";
 
 export default class TagService {
-    private static axios = AxiosFactory.createAxiosInstance("/tag")
+    private static tagAxios = AxiosFactory.createAxiosInstance("/tag");
 
     static getTags(prefix: string) : Promise<TagDTO[]> {
         return PromiseCache.getCachedPromise("TagService::getTags(" + prefix + ")", () => {
             return new Promise((resolve, reject) => {
-                this.axios.get('', {
+                this.tagAxios.get('', {
                     params: {
                         prefix: prefix,
                     }

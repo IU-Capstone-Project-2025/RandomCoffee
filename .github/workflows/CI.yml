@@ -14,6 +14,22 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check for changes
+        id: check_changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            bot-service:
+              - 'backend/bot-service/**'
+            api-gateway:
+              - 'backend/API-gateway/**'
+            profile-service:
+              - 'backend/profile-service/**'
+            mini-app:
+              - 'mini-app/**'
+            ml:
+              - 'ml/**'
+
       - name: Create .env file
         run: |
           cat > .env << EOF
@@ -24,14 +40,22 @@ jobs:
 
       - name: Build and start containers
         run: |
-          docker compose -f compose-dev.yaml up -d --build
+          # Build and start only services with changes or their dependencies
+          if [[ "${{ steps.check_changes.outputs.profile-service }}" == "true" || "${{ steps.check_changes.outputs.bot-service }}" == "true" || "${{ steps.check_changes.outputs.api-gateway }}" == "true" || "${{ steps.check_changes.outputs.mini-app }}" == "true" || "${{ steps.check_changes.outputs.ml }}" == "true" ]]; then
+            docker compose -f compose-dev.yaml up -d --build
+          else
+            echo "No changes detected in any service, skipping build and tests"
+            exit 0
+          fi
 
       - name: Wait for containers to be up and running
+        if: steps.check_changes.outputs.profile-service == 'true' || steps.check_changes.outputs.bot-service == 'true' || steps.check_changes.outputs.api-gateway == 'true' || steps.check_changes.outputs.mini-app == 'true' || steps.check_changes.outputs.ml == 'true'
         run: |
           echo "Waiting for containers to start..."
           sleep 30
 
       - name: Show container logs
+        if: steps.check_changes.outputs.profile-service == 'true' || steps.check_changes.outputs.bot-service == 'true' || steps.check_changes.outputs.api-gateway == 'true' || steps.check_changes.outputs.mini-app == 'true' || steps.check_changes.outputs.ml == 'true'
         run: |
           docker compose -f compose-dev.yaml ps -a
 
@@ -54,6 +78,7 @@ jobs:
           docker logs ml
 
       - name: Perform validations on all containers
+        if: steps.check_changes.outputs.profile-service == 'true' || steps.check_changes.outputs.bot-service == 'true' || steps.check_changes.outputs.api-gateway == 'true' || steps.check_changes.outputs.mini-app == 'true' || steps.check_changes.outputs.ml == 'true'
         run: |
           if ! docker ps -a | grep -q "mini-app"; then
             echo "Error: mini-app container is not running"
