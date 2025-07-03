@@ -3,6 +3,9 @@ name: CD
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
 
 jobs:
   build-and-push:
@@ -20,7 +23,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
+      - name: Check for changes
+        id: check_changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            bot-service:
+              - 'backend/bot-service/**'
+            api-gateway:
+              - 'backend/API-gateway/**'
+            profile-service:
+              - 'backend/profile-service/**'
+            mini-app:
+              - 'mini-app/**'
+            ml:
+              - 'ml/**'
+
       - name: Build and push bot-service
+        if: steps.check_changes.outputs.bot-service == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./backend/bot-service
@@ -28,6 +48,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/bot-service:latest
 
       - name: Build and push api-gateway
+        if: steps.check_changes.outputs.api-gateway == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./backend/API-gateway
@@ -35,6 +56,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-gateway:latest
 
       - name: Build and push profile-service
+        if: steps.check_changes.outputs.profile-service == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./backend/profile-service
@@ -42,15 +64,15 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/profile-service:latest
 
       - name: Build and push mini-app
+        if: steps.check_changes.outputs.mini-app == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./mini-app
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/mini-app:latest
-          build-args: |
-            NEXT_PUBLIC_API_BASE_URL=https://api.therandomcoffee.ru
 
       - name: Build and push ml
+        if: steps.check_changes.outputs.ml == 'true'
         uses: docker/build-push-action@v6
         with:
           context: ./ml

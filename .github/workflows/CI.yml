@@ -14,6 +14,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Check for changes
+        id: check_changes
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            bot-service:
+              - 'backend/bot-service/**'
+            api-gateway:
+              - 'backend/API-gateway/**'
+            profile-service:
+              - 'backend/profile-service/**'
+            mini-app:
+              - 'mini-app/**'
+            ml:
+              - 'ml/**'
+            compose:
+              - 'compose*.yaml'
+              - '.github/workflows/CI.yml'
+
       - name: Create .env file
         run: |
           cat > .env << EOF
@@ -22,9 +41,30 @@ jobs:
           BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           EOF
 
-      - name: Build and start containers
+      - name: Build and start API Gateway
+        if: steps.check_changes.outputs.api-gateway == 'true' || steps.check_changes.outputs.compose == 'true'
         run: |
-          docker compose -f compose-dev.yaml up -d --build
+          docker compose -f compose-dev.yaml up -d --build api-gateway
+
+      - name: Build and start Bot Service
+        if: steps.check_changes.outputs.bot-service == 'true' || steps.check_changes.outputs.compose == 'true'
+        run: |
+          docker compose -f compose-dev.yaml up -d --build bot-service
+
+      - name: Build and start Profile Service
+        if: steps.check_changes.outputs.profile-service == 'true' || steps.check_changes.outputs.compose == 'true'
+        run: |
+          docker compose -f compose-dev.yaml up -d --build profile-service profile-db
+
+      - name: Build and start Mini App
+        if: steps.check_changes.outputs.mini-app == 'true' || steps.check_changes.outputs.compose == 'true'
+        run: |
+          docker compose -f compose-dev.yaml up -d --build mini-app
+
+      - name: Build and start ML Service
+        if: steps.check_changes.outputs.ml == 'true' || steps.check_changes.outputs.compose == 'true'
+        run: |
+          docker compose -f compose-dev.yaml up -d --build ml
 
       - name: Wait for containers to be up and running
         run: |
@@ -35,46 +75,97 @@ jobs:
         run: |
           docker compose -f compose-dev.yaml ps -a
 
-          echo "=== Bot Service Logs ==="
-          docker logs bot-service
+          if [[ "${{ steps.check_changes.outputs.bot-service }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            echo "=== Bot Service Logs ==="
+            docker logs bot-service || echo "Failed to get logs for bot-service"
+          fi
 
-          echo "=== API Gateway Logs ==="
-          docker logs api-gateway
+          if [[ "${{ steps.check_changes.outputs.api-gateway }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            echo "=== API Gateway Logs ==="
+            docker logs api-gateway || echo "Failed to get logs for api-gateway"
+          fi
 
-          echo "=== Profile Service Logs ==="
-          docker logs profile-service
+          if [[ "${{ steps.check_changes.outputs.profile-service }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            echo "=== Profile Service Logs ==="
+            docker logs profile-service || echo "Failed to get logs for profile-service"
+            
+            echo "=== Profile DB Logs ==="
+            docker logs profile-db || echo "Failed to get logs for profile-db"
+          fi
 
-          echo "=== Profile DB Logs ==="
-          docker logs profile-db
+          if [[ "${{ steps.check_changes.outputs.mini-app }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            echo "=== Mini App Logs ==="
+            docker logs mini-app || echo "Failed to get logs for mini-app"
+          fi
 
-          echo "=== Mini App Logs ==="
-          docker logs mini-app
+          if [[ "${{ steps.check_changes.outputs.ml }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            echo "=== ML Service Logs ==="
+            docker logs ml || echo "Failed to get logs for ml"
+          fi
 
-          echo "=== ML Service Logs ==="
-          docker logs ml
-
-      - name: Perform validations on all containers
+      - name: Validate containers
         run: |
-          if ! docker ps -a | grep -q "mini-app"; then
-            echo "Error: mini-app container is not running"
-            exit 1
+          # Check API Gateway if needed
+          if [[ "${{ steps.check_changes.outputs.api-gateway }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            if ! docker ps -a | grep -q "api-gateway"; then
+              echo "Error: api-gateway container is not running"
+              exit 1
+            fi
+            if ! docker port api-gateway | grep -q ":"; then
+              echo "Error: No ports are exposed on api-gateway container"
+              exit 1
+            fi
           fi
 
-          if ! docker port mini-app | grep -q ":"; then
-            echo "Error: No ports are exposed on mini-app container"
-            exit 1
+          # Check Bot Service if needed
+          if [[ "${{ steps.check_changes.outputs.bot-service }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            if ! docker ps -a | grep -q "bot-service"; then
+              echo "Error: bot-service container is not running"
+              exit 1
+            fi
           fi
 
-          if ! docker port api-gateway | grep -q ":"; then
-            echo "Error: No ports are exposed on api-gateway container"
-            exit 1
+          # Check Profile Service if needed
+          if [[ "${{ steps.check_changes.outputs.profile-service }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            if ! docker ps -a | grep -q "profile-service"; then
+              echo "Error: profile-service container is not running"
+              exit 1
+            fi
+            if ! docker port profile-service | grep -q ":"; then
+              echo "Error: No ports are exposed on profile-service container"
+              exit 1
+            fi
+            if ! docker ps -a | grep -q "profile-db"; then
+              echo "Error: profile-db container is not running"
+              exit 1
+            fi
           fi
 
-          if ! docker port ml | grep -q ":"; then
-            echo "Error: No ports are exposed on ml container"
-            exit 1
+          # Check Mini App if needed
+          if [[ "${{ steps.check_changes.outputs.mini-app }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            if ! docker ps -a | grep -q "mini-app"; then
+              echo "Error: mini-app container is not running"
+              exit 1
+            fi
+            if ! docker port mini-app | grep -q ":"; then
+              echo "Error: No ports are exposed on mini-app container"
+              exit 1
+            fi
           fi
 
+          # Check ML Service if needed
+          if [[ "${{ steps.check_changes.outputs.ml }}" == "true" || "${{ steps.check_changes.outputs.compose }}" == "true" ]]; then
+            if ! docker ps -a | grep -q "ml"; then
+              echo "Error: ml container is not running"
+              exit 1
+            fi
+            if ! docker port ml | grep -q ":"; then
+              echo "Error: No ports are exposed on ml container"
+              exit 1
+            fi
+          fi
+
+          # Check for any container failures
           if docker compose -f compose-dev.yaml ps -a | grep -q "Exited ([1-9][0-9]*\|[2-9])"; then
             echo "Error: Some containers exited with non-zero status"
             exit 1
