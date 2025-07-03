@@ -30,7 +30,8 @@ jobs:
             ml:
               - 'ml/**'
             compose:
-              - 'ml/**'
+              - 'compose*.yaml'
+              - '.github/workflows/CI.yml'
 
       - name: Create .env file
         run: |
