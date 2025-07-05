@@ -1,6 +1,6 @@
 package iu.botservice.service;
 
-import iu.botservice.handler.UpdateConsumer;
+import iu.botservice.telegram.UpdateConsumer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

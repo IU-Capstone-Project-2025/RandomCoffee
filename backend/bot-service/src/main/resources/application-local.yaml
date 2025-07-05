@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: "bot-service"
+bot:
+  token: ${BOT_TOKEN}
+scheduler:
+  enabled: false
+  time:
+    survey: "0 * * * * *"
+    matchmaking: "10 * * * * *"

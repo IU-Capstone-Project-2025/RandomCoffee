@@ -1,4 +1,4 @@
-package iu.botservice.handler;
+package iu.botservice.telegram;
 
 import iu.botservice.command.Commands;
 import lombok.RequiredArgsConstructor;
