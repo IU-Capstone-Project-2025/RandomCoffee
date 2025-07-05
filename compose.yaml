@@ -5,13 +5,12 @@ services:
     container_name: bot-service
     tty: true
     env_file: ./.env
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
     image: mituta/bot-service:latest
     platform: linux/x86_64
   api-gateway:
     container_name: api-gateway
     tty: true
+    env_file: ./.env
     image: mituta/api-gateway:latest
     platform: linux/x86_64
     ports:
@@ -22,9 +21,6 @@ services:
     image: mituta/profile-service:latest
     platform: linux/x86_64
     env_file: ./.env
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "8081:8081"
   profile-db:
@@ -44,6 +40,7 @@ services:
   mini-app:
     container_name: mini-app
     tty: true
+    env_file: ./.env
     image: mituta/mini-app:latest
     ports:
       - "3000:3000"
@@ -51,6 +48,7 @@ services:
   ml:
     container_name: ml
     tty: true
+    env_file: ./.env
     image: mituta/ml:latest
     platform: linux/x86_64
     ports:

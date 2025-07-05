@@ -5,8 +5,6 @@ services:
     container_name: bot-service
     tty: true
     env_file: ./.env
-    environment:
-      - BOT_TOKEN=${BOT_TOKEN}
     build:
       context: ./backend/bot-service
       dockerfile: Dockerfile
@@ -15,6 +13,7 @@ services:
   api-gateway:
     container_name: api-gateway
     tty: true
+    env_file: ./.env
     build:
       context: ./backend/API-gateway
       dockerfile: Dockerfile
@@ -28,9 +27,6 @@ services:
     depends_on:
       - profile-db
     env_file: ./.env
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     build:
       context: ./backend/profile-service
       dockerfile: Dockerfile
@@ -54,6 +50,7 @@ services:
   mini-app:
     container_name: mini-app
     tty: true
+    env_file: ./.env
     build:
       context: ./mini-app
       dockerfile: Dockerfile
@@ -64,6 +61,7 @@ services:
   ml:
     container_name: ml
     tty: true
+    env_file: ./.env
     build:
       context: ./ml
       dockerfile: Dockerfile
