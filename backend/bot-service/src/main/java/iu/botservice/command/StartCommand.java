@@ -1,5 +1,6 @@
 package iu.botservice.command;
 
+import iu.botservice.telegram.TelegramClientHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -8,7 +9,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Slf4j
 @Component
-public class StartCommand extends Command {
+public class StartCommand implements Command {
 
     @Override
     public void handle(Update update) {
@@ -20,7 +21,7 @@ public class StartCommand extends Command {
                 getCommandName()
         );
         try {
-            telegramClient.execute(SendMessage.builder()
+            TelegramClientHolder.getTelegramClient().execute(SendMessage.builder()
                     .chatId(chatId)
                     .text("Hi, lad! All bot functionality is in the Telegram mini app. Please, press the button 'Open' to enjoy it!")
                     .build());
@@ -30,7 +31,7 @@ public class StartCommand extends Command {
     }
 
     @Override
-    protected final String getCommandName() {
+    public String getCommandName() {
         return "/start";
     }
 }

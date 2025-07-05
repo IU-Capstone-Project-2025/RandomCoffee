@@ -2,4 +2,9 @@ spring:
   application:
     name: "bot-service"
 bot:
-  token: "${BOT_TOKEN}"
+  token: ${BOT_TOKEN}
+scheduler:
+  enabled: ${SCHEDULER_ENABLED:true}
+  time:
+    survey: ${SURVEY_CRON:0 0 10 * * 5}
+    matchmaking: ${MATCHMAKING_CRON:0 0 10 * * 1}
